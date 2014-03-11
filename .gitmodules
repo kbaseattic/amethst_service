@@ -1,0 +1,6 @@
+[submodule "AMETHST"]
+	path = AMETHST
+	url = https://github.com/MG-RAST/AMETHST.git
+[submodule "MG-RAST-Tools"]
+	path = MG-RAST-Tools
+	url = https://github.com/MG-RAST/MG-RAST-Tools.git
