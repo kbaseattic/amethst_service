@@ -27,7 +27,7 @@ SRC_PERL = $(wildcard plbin/*.pl)
 deploy: deploy-client deploy-service
 
 
-deploy-all: initialize  deploy-client deploy-service
+deploy-all: initialize deploy-client deploy-service
 
 
 deploy-client: deploy-libs deploy-scripts
@@ -60,9 +60,11 @@ deploy-service: deploy-cfg
 	chmod +x $(TARGET)/services/$(SERVICE_DIR)/stop_service
 	$(TPAGE) $(TPAGE_ARGS) service/upstart.tt > service/$(SERVICE_NAME).conf
 	chmod +x service/$(SERVICE_NAME).conf
+	rm -rf $(TARGET)/services/$(SERVICE_DIR)/AMETHST/
 	cp -r AMETHST $(TARGET)/services/$(SERVICE_DIR)/
 	echo "done executing deploy-service target"
 
+.PHONY : initialize
 initialize:
 	git submodule init
 	git submodule update
@@ -73,6 +75,7 @@ deploy-upstart: deploy-service
 	echo "done executing deploy-upstart target"
 
 build-libs:
+	cp impl_code.txt lib/Bio/KBase/AmethstService/AmethstServiceImpl.pm
 	compile_typespec \
 		--psgi $(SERVICE_PSGI)  \
 		--impl Bio::KBase::$(SERVICE_NAME)::$(SERVICE_NAME)Impl \

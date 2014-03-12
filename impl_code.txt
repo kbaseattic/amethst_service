@@ -1,26 +1,30 @@
-
-to inserted into
-lib/Bio/KBase/AmethstService/AmethstServiceImpl.pm
+#template for lib/Bio/KBase/AmethstService/AmethstServiceImpl.pm
 
 
 #BEGIN_HEADER
 use AMETHSTAWE;
 #END_HEADER
 
+#BEGIN_CONSTRUCTOR
+$self->{'instance'} = new AMETHSTAWE(@args);
+#END_CONSTRUCTOR
+
 
 #BEGIN amethst
-	$job_id = AMETHSTAWE::amethst($abundance_matrix, $groups_list, $commands_list, $tree);
+	$job_id = $self->{'instance'}->amethst_string($abundance_matrix, $groups_list, $commands_list, $tree);
 #END amethst
 
+
 #BEGIN status
-	$status = AMETHSTAWE::status($job_id);
+	$status = $self->{'instance'}->status($job_id);
 #END status
 
 
 #BEGIN results
-	$return = AMETHSTAWE::results($job_id);
+	$return = $self->{'instance'}->results($job_id);
 #END results
 
-#BEGIN delete
-	$results = AMETHSTAWE::delete($job_id);
-#END delete
+
+#BEGIN delete_job
+	$results = $self->{'instance'}->delete_job($job_id);
+#END delete_job

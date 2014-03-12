@@ -7,77 +7,28 @@ use FindBin;
 use lib $FindBin::Bin;
 
 use File::Slurp;
-
-#use AWE::Client;
-#use AWE::Job;
-#use SHOCK::Client;
-
-#use JSON;
-#use File::Basename;
+use Config::Simple;
 use Data::Dumper;
 
-#use AMETHSTAWE; only for direct
 
+use SHOCK::Client; # needed for download of results from shock
 use USAGEPOD qw(parse_options);
 
 
 
-my $aweserverurl =  $ENV{'AWE_SERVER_URL'};
+
+
+
+#my $aweserverurl =  $ENV{'AWE_SERVER_URL'};
 my $shockurl =  $ENV{'SHOCK_SERVER_URL'};
-my $clientgroup = $ENV{'AWE_CLIENT_GROUP'};
+#my $clientgroup = $ENV{'AWE_CLIENT_GROUP'};
 
 my $shocktoken=$ENV{'GLOBUSONLINE'} || $ENV{'KB_AUTH_TOKEN'};
 
 
 ##############################################
 
-my ($h, $help_text) = &parse_options (
-'name' => 'mg-amethst -- wrapper for amethst',
-'version' => '1',
-'synopsis' => 'mg-amethst --matrix=<inputmatrix> --groups=<groupsfile> --commands=<commandsfile>',
-'examples' => 'ls',
-'authors' => 'Wolfgang Gerlach',
-'options' => [
-'workflow submission:',
-[ 'matrix|m=s', "abundance matrix"],
-[ 'groups|g=s',  "groups file" ],
-[ 'commands|c=s',  "commands file" ],
-[ 'tree|t=s',  "tree (optional)" ],
-'',
-'other commands:',
-[ 'status|s=s' , 'show status of a given AWE job_id'],
-[ 'download|d=s' , 'download results for a given AWE job_id'],
-[ 'delete=s' , 'delete AWE Job (and SHOCK files) for a given AWE job_id'],
-'',
-'only local: (bypasses service)',
-[ 'command_file|f=s', ""],
-[ 'zip_prefix|z=s', ""],
-'',
-[ 'local', "", { hidden => 1  }], #deprecated
-[ 'help|h', "", { hidden => 1  }]
-]
-);
-
-
-if ($h->{'help'} || keys(%$h)==0) {
-	print $help_text;
-	exit(0);
-}
-
-print "Configuration:\n";
-print "aweserverurl: ".($aweserverurl || 'undef') ."\n";
-print "shockurl: ". ($shockurl || 'undef') ."\n";
-print "clientgroup: ". ($clientgroup || 'undef') ."\n\n";
-
-
-my $job_id = undef;
-if ((defined $h->{'command_file'}) || (defined $h->{'zip_prefix'}) ) {
-	#require AMETHSTAWE;
-	#$job_id = AMETHSTAWE::amethst_main($h->{'matrix'}, $h->{'groups'},$h->{'commands'}, $h->{'tree'});
-	
-	$h->{'command_file'} || die "no command_file defined";
-	$h->{'zip_prefix'} || die "no zip_prefix defined";
-	
+sub find_amethst_bin_dir {
 	my $KB_TOP = $ENV{'KB_TOP'};
 	
 	unless (defined $KB_TOP) {
@@ -104,8 +55,63 @@ if ((defined $h->{'command_file'}) || (defined $h->{'zip_prefix'}) ) {
 	unless (-d $amethst_bin_dir ) {
 		die "AMETHST bin directory \"$amethst_bin_dir\" not found";
 	}
+	return $amethst_bin_dir;
+}
+
+##############################################
+
+my ($h, $help_text) = &parse_options (
+'name' => 'mg-amethst -- wrapper for amethst',
+'version' => '1',
+'synopsis' => 'mg-amethst --matrix=<inputmatrix> --groups=<groupsfile> --commands=<commandsfile>',
+'examples' => 'ls',
+'authors' => 'Wolfgang Gerlach',
+'options' => [
+'workflow submission:',
+[ 'matrix|m=s', "abundance matrix"],
+[ 'groups|g=s',  "groups file" ],
+[ 'commands|c=s',  "commands file" ],
+[ 'tree|t=s',  "tree (optional)" ],
+[ 'token=s',  "shock token" ],
+'',
+'other commands:',
+[ 'status|s=s' , 'show status of a given AWE job_id'],
+[ 'download|d=s' , 'download results for a given AWE job_id'],
+[ 'delete=s' , 'delete AWE Job (and SHOCK files) for a given AWE job_id'],
+'',
+'only local: (bypasses service)',
+[ 'command_file|f=s', ""],
+[ 'zip_prefix|z=s', ""],
+[ 'summary', "" ],
+'',
+[ 'local', "", { hidden => 1  }], #deprecated
+[ 'help|h', "", { hidden => 1  }]
+]
+);
+
+
+if ($h->{'help'} || keys(%$h)==0) {
+	print $help_text;
+	exit(0);
+}
+
+
+if (defined $h->{'token'}) {
+	$shocktoken = $h->{'token'};
+}
+
+
+my $job_id = undef;
+if ((defined $h->{'command_file'}) || (defined $h->{'zip_prefix'}) ) {
+	#require AMETHSTAWE;
+	#$job_id = AMETHSTAWE::amethst_main($h->{'matrix'}, $h->{'groups'},$h->{'commands'}, $h->{'tree'});
 	
-	my $amethst_pl = $amethst_bin_dir.'AMETHST.pl';
+	$h->{'command_file'} || die "no command_file defined";
+	$h->{'zip_prefix'} || die "no zip_prefix defined";
+	
+	
+	
+	my $amethst_pl = find_amethst_bin_dir().'AMETHST.pl';
 	
 	
 	unless (-e $amethst_pl) {
@@ -117,6 +123,21 @@ if ((defined $h->{'command_file'}) || (defined $h->{'zip_prefix'}) ) {
 	my $cmd = $amethst_pl.' -f '.$h->{'command_file'}.' -z '.$h->{'zip_prefix'};
 	print "cmd: $cmd\n";
 	system($cmd);
+
+} elsif ( defined $h->{'summary'} ) {
+	
+	my $summary_pl = find_amethst_bin_dir().'compile_p-values-summary_files.pl';
+	
+	
+	unless (-e $summary_pl) {
+		die "\"$summary_pl\" not found";
+	}
+	
+	my $cmd = $summary_pl.' -g -u';
+	print "cmd: $cmd\n";
+	system($cmd);
+	
+	
 	
 } elsif ((defined $h->{'matrix'}) || (defined $h->{'groups'}) || (defined $h->{'commands'})) {
 	
@@ -135,7 +156,7 @@ if ((defined $h->{'command_file'}) || (defined $h->{'zip_prefix'}) ) {
 		$tree_data = read_file($h->{'tree'});
 	}
 	
-	my $amethst_obj = new Bio::KBase::AmethstService::AmethstServiceImpl;
+	my $amethst_obj = new Bio::KBase::AmethstService::AmethstServiceImpl('shocktoken' => $shocktoken);
 	
 	
 	$job_id = $amethst_obj->amethst($abundance_matrix_data, $groups_list_data, $commands_list_data, $tree_data);
@@ -151,7 +172,7 @@ if ((defined $h->{'command_file'}) || (defined $h->{'zip_prefix'}) ) {
 	
 	require Bio::KBase::AmethstService::AmethstServiceImpl;
 	
-	my $amethst_obj = new Bio::KBase::AmethstService::AmethstServiceImpl;
+	my $amethst_obj = new Bio::KBase::AmethstService::AmethstServiceImpl('shocktoken' => $shocktoken);
 	my $status = $amethst_obj->status($h->{'status'}) || 'undefined';
 
 	print "status: ".$status."\n";
@@ -161,7 +182,7 @@ if ((defined $h->{'command_file'}) || (defined $h->{'zip_prefix'}) ) {
 	
 	require Bio::KBase::AmethstService::AmethstServiceImpl;
 	
-	my $amethst_obj = new Bio::KBase::AmethstService::AmethstServiceImpl;
+	my $amethst_obj = new Bio::KBase::AmethstService::AmethstServiceImpl('shocktoken' => $shocktoken);
 	my $results = $amethst_obj->results($h->{'download'}) || 'undefined';
 	
 	print "results: ".Dumper($results)."\n";
@@ -174,7 +195,28 @@ if ((defined $h->{'command_file'}) || (defined $h->{'zip_prefix'}) ) {
 		}
 	}
 	
-	require SHOCK::Client;
+	
+	
+	unless (defined($shockurl) && $shockurl ne '') {
+
+		my $conf_file = $ENV{'KB_TOP'}.'/deployment.cfg';
+		unless (-e $conf_file) {
+			die "error: deployment.cfg not found ($conf_file)";
+		}
+		
+		
+		my $cfg_full = Config::Simple->new($conf_file );
+		my $cfg = $cfg_full->param(-block=>'AmethstService');
+		
+		$shockurl =  $cfg->param('shock-server' );
+		
+		unless (defined($shockurl) && $shockurl ne "") {
+			die "shockurl not found in config";
+		}
+		
+	}
+	
+	
 	
 	my $shock = new SHOCK::Client($shockurl, $shocktoken); # shock production
 	unless (defined $shock) {
@@ -194,7 +236,7 @@ if ((defined $h->{'command_file'}) || (defined $h->{'zip_prefix'}) ) {
 
 	require Bio::KBase::AmethstService::AmethstServiceImpl;
 	
-	my $amethst_obj = new Bio::KBase::AmethstService::AmethstServiceImpl;
+	my $amethst_obj = new Bio::KBase::AmethstService::AmethstServiceImpl('shocktoken' => $shocktoken);
 
 	my $delete_status = $amethst_obj->delete_job($h->{'delete'}) || 'undefined';
 	
