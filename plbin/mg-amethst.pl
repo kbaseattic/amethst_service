@@ -10,6 +10,7 @@ use File::Slurp;
 use Config::Simple;
 use Data::Dumper;
 
+use File::Basename;
 
 use SHOCK::Client; # needed for download of results from shock
 use USAGEPOD qw(parse_options);
@@ -58,20 +59,41 @@ sub find_amethst_bin_dir {
 	return $amethst_bin_dir;
 }
 
+sub read_shock_url {
+	
+	my $conf_file = $ENV{'KB_TOP'}.'/deployment.cfg';
+	unless (-e $conf_file) {
+		die "error: deployment.cfg not found ($conf_file)";
+	}
+	
+	
+	my $cfg_full = Config::Simple->new($conf_file );
+	my $cfg = $cfg_full->param(-block=>'AmethstService');
+	
+	my $shockurl =  $cfg->{'shock-server'};
+	
+	unless (defined($shockurl) && $shockurl ne "") {
+		die "shockurl not found in config";
+	}
+	
+	return $shockurl;
+}
+
+
 ##############################################
 
 my ($h, $help_text) = &parse_options (
 'name' => 'mg-amethst -- wrapper for amethst',
 'version' => '1',
-'synopsis' => 'mg-amethst --matrix=<inputmatrix> --groups=<groupsfile> --commands=<commandsfile>',
+'synopsis' => 'mg-amethst -c <commandsfile>',
 'examples' => 'ls',
 'authors' => 'Wolfgang Gerlach',
 'options' => [
 'workflow submission:',
-[ 'matrix|m=s', "abundance matrix"],
-[ 'groups|g=s',  "groups file" ],
+#[ 'matrix|m=s', "abundance matrix"],
+#[ 'groups|g=s',  "groups file" ],
 [ 'commands|c=s',  "commands file" ],
-[ 'tree|t=s',  "tree (optional)" ],
+#[ 'tree|t=s',  "tree (optional)" ],
 [ 'token=s',  "shock token" ],
 '',
 'other commands:',
@@ -100,11 +122,13 @@ if (defined $h->{'token'}) {
 	$shocktoken = $h->{'token'};
 }
 
+if (defined($shocktoken) && $shocktoken eq '') {
+	$shocktoken = undef;
+}
 
 my $job_id = undef;
 if ((defined $h->{'command_file'}) || (defined $h->{'zip_prefix'}) ) {
-	#require AMETHSTAWE;
-	#$job_id = AMETHSTAWE::amethst_main($h->{'matrix'}, $h->{'groups'},$h->{'commands'}, $h->{'tree'});
+	
 	
 	$h->{'command_file'} || die "no command_file defined";
 	$h->{'zip_prefix'} || die "no zip_prefix defined";
@@ -139,27 +163,112 @@ if ((defined $h->{'command_file'}) || (defined $h->{'zip_prefix'}) ) {
 	
 	
 	
-} elsif ((defined $h->{'matrix'}) || (defined $h->{'groups'}) || (defined $h->{'commands'})) {
+} elsif ( defined($h->{'commands'}) ) {
 	
 	require Bio::KBase::AmethstService::AmethstServiceImpl;
 	
-	$h->{'matrix'} || die "no matrix file defined";
-	$h->{'groups'} || die "no groups file defined";
-	$h->{'commands'} || die "no commands file defined";
 	
-	# slurp all files
-	my $abundance_matrix_data = read_file( $h->{'matrix'});
-	my $groups_list_data = read_file( $h->{'groups'});
+	# slurp
 	my $commands_list_data = read_file( $h->{'commands'});
-	my $tree_data = undef;
-	if (defined $h->{'tree'}){
-		$tree_data = read_file($h->{'tree'});
-	}
 	
+	if (defined $shocktoken) {
+		print "use shocktoken\n";
+	} else {
+		print "no shocktoken\n";
+	}
 	my $amethst_obj = new Bio::KBase::AmethstService::AmethstServiceImpl('shocktoken' => $shocktoken);
 	
 	
-	$job_id = $amethst_obj->amethst($abundance_matrix_data, $groups_list_data, $commands_list_data, $tree_data);
+	
+	
+	
+	my $local_data_files = {};
+	
+	
+	# extract filenames
+	open (CMD_SOURCE, '<', $h->{'commands'}) or die $!;
+	while (my $line = <CMD_SOURCE>) {
+		
+		if ($line =~ /^\#job/) {
+			my ($analysis) = $line =~ /^\#job\s*(\S+)/;
+			
+			unless (defined($analysis)) {
+				die "analysis filename (after keyword job) not defined";
+			}
+			#my $analysis_filename = $analysis.'.RESULTS.tar.gz';
+			
+			#if (-e $analysis_filename) {
+			#	die "analysis results file \"$analysis_filename\" already exists";
+			#}
+			
+			my $cmd1 = <CMD_SOURCE>;
+			my $cmd2 = <CMD_SOURCE>;
+			my $sum_cmd = <CMD_SOURCE>;
+			chomp($cmd1);
+			chomp($cmd2);
+			chomp($sum_cmd);
+			foreach my $cmd (($cmd1, $cmd2)) {
+				foreach my $key (('-f', '-g', '-a', '--data_file', '--groups_list', '--tree')) {
+					my ($file) = $cmd =~ /$key\s+(\S+)/;
+					if (defined $file) {
+						
+						if ($file ne basename($file)) {
+							die "error: only files in current directory are allowed";
+						}
+						
+						unless (defined $local_data_files->{$file}) {
+							unless (-e $file) {
+								die "error: file \"$file\" not found";
+							}
+							$local_data_files->{$file} = 1;
+						}
+					} # end if
+				} # end foreach
+			} # end foreach
+			
+			
+		} # end if
+		
+		
+	} # end while
+	close(CMD_SOURCE);
+
+	print "files to upload: ".join(',', keys(%$local_data_files))."\n";
+
+
+	unless (defined($shockurl) && $shockurl ne '') {
+		$shockurl = read_shock_url();
+		print "using deploy.cfg shock-server: $shockurl\n";
+	} else {
+		print "using env SHOCK_SERVER_URL: $shockurl\n";
+	}
+
+
+
+	my $shock = new SHOCK::Client($shockurl, $shocktoken);
+	unless (defined $shock) {
+		die;
+	}
+
+	# define input
+	my $job_input = {};
+	foreach my $file (keys(%$local_data_files)) {
+		$job_input->{$file}->{'file'} = $file;
+	}
+
+	# upload input to SHOCK
+	$shock->upload_temporary_files($job_input);
+
+	# collect SHOCK nodes
+	my $file2shock={};
+	foreach my $file (keys(%$local_data_files)) {
+		print "found file: $file\n";
+		my $node = $job_input->{$file}->{'node'} || die "node not defined $file ";
+		print "found node: $node\n";
+		$file2shock->{$file} = $node;
+	}
+
+	$job_id = $amethst_obj->amethst($commands_list_data, $file2shock);
 	
 	unless (defined $job_id) {
 		$job_id = 'undefined';
@@ -198,22 +307,7 @@ if ((defined $h->{'command_file'}) || (defined $h->{'zip_prefix'}) ) {
 	
 	
 	unless (defined($shockurl) && $shockurl ne '') {
-
-		my $conf_file = $ENV{'KB_TOP'}.'/deployment.cfg';
-		unless (-e $conf_file) {
-			die "error: deployment.cfg not found ($conf_file)";
-		}
-		
-		
-		my $cfg_full = Config::Simple->new($conf_file );
-		my $cfg = $cfg_full->param(-block=>'AmethstService');
-		
-		$shockurl =  $cfg->param('shock-server' );
-		
-		unless (defined($shockurl) && $shockurl ne "") {
-			die "shockurl not found in config";
-		}
-		
+		$shockurl = read_shock_url();
 	}
 	
 	

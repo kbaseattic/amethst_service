@@ -11,7 +11,7 @@ $self->{'instance'} = new AMETHSTAWE(@args);
 
 
 #BEGIN amethst
-	$job_id = $self->{'instance'}->amethst_string($abundance_matrix, $groups_list, $commands_list, $tree);
+	$job_id = $self->{'instance'}->amethst(\$commands_list, $file2shock);
 #END amethst
 
 
