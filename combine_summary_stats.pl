@@ -10,7 +10,7 @@ use Statistics::Descriptive;
 
 
 
-my($within_pattern, $between_pattern, $groups_list, $within_file, $between_file, $output_file, $pcoa_pattern, $pcoa_file, $help, $verbose, $debug);
+my($within_pattern, $between_pattern, $groups_list, $within_file, $between_file, $output_file, $pcoa_pattern, $pcoa_file, $help, $verbose, $debug, $results_dir);
 
 my $current_dir = getcwd()."/";
 my $mode = "exact";
@@ -65,6 +65,10 @@ if($mode eq "pattern"){
   chomp $pcoa_search;
   $pcoa_file = $pcoa_search; 
   
+  my $dir_search = $current_dir.qx(ls -d $job_name.$within_pattern.RESULTS);
+  chomp $dir_search;
+  $results_dir = $dir_search;
+
   #if($debug){print STDERR "within_file:"."\n"."###".$within_file."###\n";}
   #if($debug){print STDERR "between_file:"."\n"."###".$between_file."###\n";}
 }else{
@@ -276,10 +280,15 @@ system("cp $pcoa_file ./$job_name.PCoA")==0 or die "died copying $pcoa_file to .
 if( $groups_list ){
   my $render_pcoa_string = "$DIR/render_calculated_pcoa_shell.sh $job_name.PCoA $groups_list 11 8.5 300 0.2 0.8 0.5 0.7";
   print LOG "render PCoA:"."\n".$render_pcoa_string."\n";
-  # order of args in the strin is 
+  # order of args in the string is 
   #      pcoa_file ($job_name.PCoA) groups_list ($groups_list) png_width(11) png_height(8.5) png_dpi(300)
   #      legend_width_scale(0.2) pcoa_width_scale(0.8) legend_cex(0.5) figure_cex(0.7)
   system($render_pcoa_string)==0 or die "died running"."\n".$render_pcoa_string."\n";
+  # now copy image back to results before zipping
+  my $copy_rendered_pcoa_string = "cp $job_name.PCoA.pcoa.png $results_dir/$job_name.PCoA.pcoa.png"; 
+  print LOG "copy PCoA image back to results:"."\n".$copy_rendered_pcoa_string."\n";
+  system($copy_rendered_pcoa_string)==0 or die "died running"."\n".$copy_rendered_pcoa_string."\n";
+
 }
 
 
