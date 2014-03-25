@@ -1,9 +1,0 @@
-#job test_analysis_1
-plot_pco_with_stats_all.pl --data_file 16.Qiime.100p.included.norm.qiime_table --groups_list AMETHST.stat.groups --sig_if lt --num_perm 10 --perm_type dataset_rand --dist_method euclidean --dist_pipe qiime_pipe --qiime_format qiime_table --num_cpus 10 --output_prefix within --cleanup
-plot_pco_with_stats_all.pl --data_file 16.Qiime.100p.included.norm.qiime_table --groups_list AMETHST.stat.groups --sig_if gt --num_perm 10 --perm_type rowwise_rand --dist_method euclidean --dist_pipe qiime_pipe --qiime_format qiime_table --num_cpus 10 --output_prefix between --cleanup
-combine_summary_stats.pl --file_search_mode pattern --within_pattern within --between_pattern between --groups_list AMETHST.PCoA.groups
-
-#job test_analysis_2
-plot_pco_with_stats_all.pl --data_file 16.Qiime.100p.included.norm.qiime_table --groups_list AMETHST.stat.groups --sig_if lt --num_perm 10 --perm_type dataset_rand --dist_method bray_curtis --dist_pipe qiime_pipe --qiime_format qiime_table --num_cpus 10 --output_prefix within --cleanup
-plot_pco_with_stats_all.pl --data_file 16.Qiime.100p.included.norm.qiime_table --groups_list AMETHST.stat.groups --sig_if gt --num_perm 10 --perm_type rowwise_rand --dist_method bray_curtis --dist_pipe qiime_pipe --qiime_format qiime_table --num_cpus 10 --output_prefix between --cleanup
-combine_summary_stats.pl --file_search_mode pattern --within_pattern within --between_pattern between --groups_list AMETHST.PCoA.groups
