@@ -24,7 +24,7 @@ use USAGEPOD qw(parse_options);
 my $shockurl =  $ENV{'SHOCK_SERVER_URL'};
 #my $clientgroup = $ENV{'AWE_CLIENT_GROUP'};
 
-my $shocktoken=$ENV{'GLOBUSONLINE'} || $ENV{'KB_AUTH_TOKEN'};
+my $shocktoken=$ENV{'KB_AUTH_TOKEN'};
 
 
 ##############################################
@@ -90,22 +90,23 @@ my ($h, $help_text) = &parse_options (
 'authors' => 'Wolfgang Gerlach',
 'options' => [
 'workflow submission:',
-#[ 'matrix|m=s', "abundance matrix"],
-#[ 'groups|g=s',  "groups file" ],
-[ 'commands|c=s',  "commands file" ],
-#[ 'tree|t=s',  "tree (optional)" ],
-[ 'token=s',  "shock token" ],
+#[ 'matrix|m=s',	"abundance matrix"],
+#[ 'groups|g=s',	"groups file" ],
+[ 'commands|c=s',	"commands file" ],
+#[ 'tree|t=s',		"tree (optional)" ],
+[ 'token=s',	"shock token" ],
 '',
 'other commands:',
-[ 'status|s=s' , 'show status of a given AWE job_id'],
-[ 'download|d=s' , 'download results for a given AWE job_id'],
-[ 'delete=s' , 'delete AWE Job (and SHOCK files) for a given AWE job_id'],
+[ 'status|s=s' ,	'show status of a given AWE job_id'],
+[ 'download|d=s' ,	'download results for a given AWE job_id'],
+[ 'delete=s' ,		'delete AWE Job (and SHOCK files) for a given AWE job_id'],
 '',
 'only local: (bypasses service)',
 [ 'command_file|f=s', ""],
 [ 'zip_prefix|z=s', ""],
 [ 'summary', "" ],
 '',
+[ 'nosubmit', "just list files, do not upload or submit to service"],
 [ 'local', "", { hidden => 1  }], #deprecated
 [ 'help|h', "", { hidden => 1  }]
 ]
@@ -207,10 +208,13 @@ if ((defined $h->{'command_file'}) || (defined $h->{'zip_prefix'}) ) {
 			chomp($cmd1);
 			chomp($cmd2);
 			chomp($sum_cmd);
-			foreach my $cmd (($cmd1, $cmd2)) {
-				foreach my $key (('-f', '-g', '-a', '--data_file', '--groups_list', '--tree')) {
-					my ($file) = $cmd =~ /$key\s+(\S+)/;
-					if (defined $file) {
+			foreach my $cmd (($cmd1, $cmd2, $sum_cmd)) {
+				#print "parse: $cmd\n";
+				foreach my $key (('--data_file', '--groups_list', '--tree')) {
+					my @files = $cmd =~ /$key\s+(\S+)/g;
+					#print "for key $key I found ".@files." files :".join(',',@files)."\n";
+					
+					foreach my $file (@files) {
 						
 						if ($file ne basename($file)) {
 							die "error: only files in current directory are allowed";
@@ -234,7 +238,9 @@ if ((defined $h->{'command_file'}) || (defined $h->{'zip_prefix'}) ) {
 	close(CMD_SOURCE);
 
 	print "files to upload: ".join(',', keys(%$local_data_files))."\n";
-
+	if (defined $h->{'nosubmit'}) {
+		exit(0);
+	}
 
 	unless (defined($shockurl) && $shockurl ne '') {
 		$shockurl = read_shock_url();

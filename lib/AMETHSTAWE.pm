@@ -149,7 +149,7 @@ sub amethst {
 			#print $cmd2."\n";
 			#print $sum_cmd."\n";
 			
-			my $used_files = $self->process_pair($file2shock, $cmd1, $cmd2);
+			my $used_files = $self->process_pair($file2shock, $cmd1, $cmd2, $sum_cmd);
 			push(@{$tasks_array}, [$analysis_filename, $pair_file, $used_files]);
 		
 		}
@@ -167,14 +167,14 @@ sub amethst {
 
 # parse filenames form commands_file
 sub process_pair {
-	my ($self, $file2shock, $cmd1, $cmd2) = @_;
+	my ($self, $file2shock, $cmd1, $cmd2, $sum_cmd) = @_;
 	
 	
 	my $used_files = {};
-	foreach my $cmd (($cmd1, $cmd2)) {
-		foreach my $key (('-f', '-g', '-a', '--data_file', '--groups_list', '--tree')) {
-			my ($file) = $cmd =~ /$key\s+(\S+)/;
-			if (defined $file) {
+	foreach my $cmd (($cmd1, $cmd2, $sum_cmd)) {
+		foreach my $key (('--data_file', '--groups_list', '--tree')) {
+			my @files = $cmd =~ /$key\s+(\S+)/g;
+			foreach my $file (@files) {
 				
 				print "found file: $file\n";
 				my $node = $file2shock->{$file} || die "file $file not in file2shock hash";
