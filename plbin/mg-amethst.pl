@@ -158,7 +158,7 @@ if ((defined $h->{'command_file'}) || (defined $h->{'zip_prefix'}) ) {
 		die "\"$summary_pl\" not found";
 	}
 	
-	my $cmd = $summary_pl.' -g -u';
+	my $cmd = $summary_pl.' -g -u -s';
 	print "cmd: $cmd\n";
 	system($cmd);
 	
