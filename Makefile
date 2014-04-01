@@ -24,10 +24,13 @@ WRAP_PERL_SCRIPT = bash $(TOOLS_DIR)/$(WRAP_PERL_TOOL).sh
 SRC_PERL = $(wildcard plbin/*.pl)
 
 
+compile: initialize
+
+
 deploy: deploy-all
 
 
-deploy-all: initialize deploy-client deploy-service
+deploy-all: deploy-client deploy-service
 
 
 deploy-client: deploy-libs deploy-scripts
