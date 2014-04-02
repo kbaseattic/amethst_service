@@ -36,10 +36,10 @@ deploy: deploy-all
 deploy-all: deploy-client deploy-service
 
 .PHONY : deploy-client
-deploy-client: deploy-libs deploy-scripts
+deploy-client: deploy-libs deploy-libs2 deploy-scripts
 
-.PHONY : deploy-libs
-deploy-libs: build-libs
+.PHONY : deploy-libs2
+deploy-libs2: build-libs
 	rsync --exclude '*.bak*' -arv MG-RAST-Tools/tools/lib/. $(TARGET)/lib/.
 
 
