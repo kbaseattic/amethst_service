@@ -24,17 +24,21 @@ WRAP_PERL_SCRIPT = bash $(TOOLS_DIR)/$(WRAP_PERL_TOOL).sh
 SRC_PERL = $(wildcard plbin/*.pl)
 
 
+
+.PHONY : compile
 compile: initialize
 
 
+.PHONY : deploy
 deploy: deploy-all
 
-
+.PHONY : deploy-all
 deploy-all: deploy-client deploy-service
 
-
+.PHONY : deploy-client
 deploy-client: deploy-libs deploy-scripts
 
+.PHONY : deploy-libs
 deploy-libs: build-libs
 	rsync --exclude '*.bak*' -arv MG-RAST-Tools/tools/lib/. $(TARGET)/lib/.
 
@@ -54,7 +58,7 @@ DEPRECATEDdeploy-scripts: initialize
 	cp -r AMETHST $(TARGET)/services/$(SERVICE_DIR)/
 
 
-
+.PHONY : deploy-service
 deploy-service: deploy-cfg
 	mkdir -p $(TARGET)/services/$(SERVICE_DIR)
 	$(TPAGE) $(TPAGE_ARGS) service/start_service.tt > $(TARGET)/services/$(SERVICE_DIR)/start_service
@@ -77,6 +81,7 @@ deploy-upstart: deploy-service
 	-cp service/$(SERVICE_NAME).conf /etc/init/
 	echo "done executing deploy-upstart target"
 
+.PHONY : build-libs
 build-libs:
 	mkdir -p lib/Bio/KBase/AmethstService/
 	cp impl_code.txt lib/Bio/KBase/AmethstService/AmethstServiceImpl.pm
