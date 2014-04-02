@@ -104,6 +104,7 @@ my ($h, $help_text) = &parse_options (
 'only local: (bypasses service)',
 [ 'command_file|f=s', ""],
 [ 'zip_prefix|z=s', ""],
+[ 'output_zip=s', ""],
 [ 'summary', "" ],
 '',
 [ 'nosubmit', "just list files, do not upload or submit to service"],
@@ -159,6 +160,12 @@ if ((defined $h->{'command_file'}) || (defined $h->{'zip_prefix'}) ) {
 	}
 	
 	my $cmd = $summary_pl.' -g -u -s';
+	
+	if (defined $h->{'output_zip'}) {
+		$summary_pl .= ' '.$h->{'output_zip'};
+	}
+	
+	
 	print "cmd: $cmd\n";
 	system($cmd);
 	

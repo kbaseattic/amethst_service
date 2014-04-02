@@ -117,12 +117,18 @@ sub amethst {
 	$self->shockurl || die "error(amethst): shockurl not defined";
 
 		
+	my $output_zip;
 	
 	my $tasks_array=[];
 	
 	#commands file is split into smaller pieces
 	open (CMD_SOURCE, '<', $commands_list) or die $!;
 	while (my $line = <CMD_SOURCE>) {
+		
+		if ($line =~ /^\#output\_zip/) {
+			($output_zip) = $line =~ /^\#output\_zip\=(\S+)/;
+		}
+		
 		
 		if ($line =~ /^\#job/) {
 			my ($analysis) = $line =~ /^\#job\s*(\S+)/;
@@ -159,7 +165,7 @@ sub amethst {
 
 	close(CMD_SOURCE);
 
-	return $self->create_and_submit_workflow($tasks_array);
+	return $self->create_and_submit_workflow($output_zip, $tasks_array);
 
 
 }
@@ -194,7 +200,7 @@ sub process_pair {
 
 
 sub create_and_submit_workflow {
-	my ($self, $tasks_array) = @_;
+	my ($self, $output_zip, $tasks_array) = @_;
 	
 	if (@$tasks_array == 0) {
 		die "error: tasks_array empty";
@@ -273,7 +279,11 @@ sub create_and_submit_workflow {
 	# create and add last summary task
 	my $newtask = $workflow->addTask(new AWE::Task());
 	
-	$newtask->command('mg-amethst --summary');
+	unless (defined $output_zip) {
+		$output_zip = 'AMETHST_Summary.tar.gz';
+	}
+	
+	$newtask->command('mg-amethst --summary --output_zip='.$output_zip);
 	$newtask->addInput(@summary_inputs); # these input nodes connect this task with the previous tasks
 	
 	# define output nodes for last task
@@ -282,7 +292,9 @@ sub create_and_submit_workflow {
 	#foreach my $suffix (@output_suffixes) {
 	#	$newtask->addOutput(new AWE::TaskOutput($prefix.$suffix, $self->shockurl));
 	#}
-	$newtask->addOutput(new AWE::TaskOutput('AMETHST_Summary.tar.gz', $self->shockurl));
+	
+	
+	$newtask->addOutput(new AWE::TaskOutput($output_zip, $self->shockurl));
 	
 
 	my $json = JSON->new;
