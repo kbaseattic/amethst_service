@@ -277,12 +277,12 @@ sub create_and_submit_workflow {
 	$newtask->addInput(@summary_inputs); # these input nodes connect this task with the previous tasks
 	
 	# define output nodes for last task
-	my $prefix = 'my_compiled.P_VALUES_SUMMARY.';
-	my @output_suffixes = ('scaled_avg_dist', 'raw_avg_dist_stdev','raw_avg_dist','p_values','num_perm');
-	foreach my $suffix (@output_suffixes) {
-		$newtask->addOutput(new AWE::TaskOutput($prefix.$suffix, $self->shockurl));
-	}
-	
+	#my $prefix = 'my_compiled.P_VALUES_SUMMARY.';
+	#my @output_suffixes = ('scaled_avg_dist', 'raw_avg_dist_stdev','raw_avg_dist','p_values','num_perm');
+	#foreach my $suffix (@output_suffixes) {
+	#	$newtask->addOutput(new AWE::TaskOutput($prefix.$suffix, $self->shockurl));
+	#}
+	$newtask->addOutput(new AWE::TaskOutput('AMETHST_Summary.tar.gz', $self->shockurl));
 	
 
 	my $json = JSON->new;
