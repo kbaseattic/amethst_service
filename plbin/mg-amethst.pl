@@ -162,7 +162,7 @@ if ((defined $h->{'command_file'}) || (defined $h->{'zip_prefix'}) ) {
 	my $cmd = $summary_pl.' -g -u -s';
 	
 	if (defined $h->{'output_zip'}) {
-		$summary_pl .= ' --output_zip='.$h->{'output_zip'};
+		$cmd .= ' --output_zip='.$h->{'output_zip'};
 	}
 	
 	
