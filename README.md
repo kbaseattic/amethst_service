@@ -13,20 +13,21 @@ configure deploy.cfg
 
 
 
-> make
+> make<br>
 
 one of:
-> make deploy-client
-> make deploy-service
-> make deploy-backend
-> make deploy-all
+> make deploy-client<br>
+> make deploy-service<br>
+> make deploy-backend<br>
+> make deploy-all<br>
 
-> source /kb/deployment/user-env.sh
+then
+> source /kb/deployment/user-env.sh<br>
 
 one of
-> make test-client
-> make test-service
-> make test-backend
-> make test
+> make test-client<br>
+> make test-service<br>
+> make test-backend<br>
+> make test<br>
 
 
