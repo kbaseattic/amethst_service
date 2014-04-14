@@ -175,7 +175,7 @@ if ((defined $h->{'command_file'}) || (defined $h->{'zip_prefix'}) ) {
 	
 	
 	
-	require Bio::KBase::AmethstService::Client.pm
+	require Bio::KBase::AmethstService::Client;
 	
 	# slurp
 	my $commands_list_data = read_file( $h->{'commands'});
@@ -293,9 +293,9 @@ if ((defined $h->{'command_file'}) || (defined $h->{'zip_prefix'}) ) {
 	
 } elsif (defined $h->{'status'}) {
 	
-	require Bio::KBase::AmethstService::AmethstServiceImpl;
+	require Bio::KBase::AmethstService::Client;
 	
-	my $amethst_obj = new Bio::KBase::AmethstService::AmethstServiceImpl('shocktoken' => $shocktoken);
+	my $amethst_obj = new Bio::KBase::AmethstService::Client(undef, 'shocktoken' => $shocktoken);
 	my $status = $amethst_obj->status($h->{'status'}) || 'undefined';
 
 	print "status: ".$status."\n";
@@ -303,9 +303,9 @@ if ((defined $h->{'command_file'}) || (defined $h->{'zip_prefix'}) ) {
 	
 } elsif (defined $h->{'download'}) {
 	
-	require Bio::KBase::AmethstService::AmethstServiceImpl;
+	require Bio::KBase::AmethstService::Client;
 	
-	my $amethst_obj = new Bio::KBase::AmethstService::AmethstServiceImpl('shocktoken' => $shocktoken);
+	my $amethst_obj = new Bio::KBase::AmethstService::Client(undef, 'shocktoken' => $shocktoken);
 	my $results = $amethst_obj->results($h->{'download'}) || 'undefined';
 	
 	print "results: ".Dumper($results)."\n";
@@ -342,9 +342,9 @@ if ((defined $h->{'command_file'}) || (defined $h->{'zip_prefix'}) ) {
 	
 } elsif (defined $h->{'delete'}) {
 
-	require Bio::KBase::AmethstService::AmethstServiceImpl;
+	require Bio::KBase::AmethstService::Client;
 	
-	my $amethst_obj = new Bio::KBase::AmethstService::AmethstServiceImpl('shocktoken' => $shocktoken);
+	my $amethst_obj = new Bio::KBase::AmethstService::Client(undef, 'shocktoken' => $shocktoken);
 
 	my $delete_status = $amethst_obj->delete_job($h->{'delete'}) || 'undefined';
 	
