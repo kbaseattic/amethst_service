@@ -123,13 +123,15 @@ test: test-client test-service test-backend
 
 .PHONY : test-client
 test-client:
-	$(TARGET)/bin/mg-amethst; \
+	$(DEPLOY_RUNTIME)/runtime/bin/mg-amethst -h; \
 	if [ $$? -ne 0 ]; then \
 		exit 1; \
 	fi \
 
 .PHONY : test-service
 test-service:
+
+
 
 .PHONY : test-backend
 test-backend:	
