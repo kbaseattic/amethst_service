@@ -114,7 +114,7 @@ build-libs-service:
 
 
 ##########################################
-# test targets
+# test targets # requires /kb/deployment/user-env.sh to be sourced
 
 
 .PHONY : test
@@ -123,7 +123,7 @@ test: test-client test-service test-backend
 
 .PHONY : test-client
 test-client:
-	$(TOP_DIR)/runtime/bin/mg-amethst -h; \
+	mg-amethst -h; \
 	if [ $$? -ne 0 ]; then \
 		exit 1; \
 	fi \
