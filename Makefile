@@ -113,5 +113,32 @@ build-libs-service:
 		$(SERVICE_SPEC) lib
 
 
+##########################################
+# test targets
+
+
+.PHONY : test
+test: test-client test-service test-backend
+
+
+.PHONY : test-client
+test-client:
+	$(TARGET)/bin/mg-amethst; \
+	if [ $$? -ne 0 ]; then \
+		exit 1; \
+	fi \
+
+.PHONY : test-service
+test-service:
+
+.PHONY : test-backend
+test-backend:	
+
+
+
+##########################################
+
+
+
 include $(TOP_DIR)/tools/Makefile.common.rules
 
