@@ -45,7 +45,7 @@ deploy-client: deploy-libs deploy-libs-client deploy-scripts
 
 
 .PHONY : deploy-service
-deploy-service: deploy-libs-service deploy-cfg
+deploy-service: deploy-libs deploy-libs-service deploy-cfg
 	mkdir -p $(TARGET)/services/$(SERVICE_DIR)
 	$(TPAGE) $(TPAGE_ARGS) service/start_service.tt > $(TARGET)/services/$(SERVICE_DIR)/start_service
 	chmod +x $(TARGET)/services/$(SERVICE_DIR)/start_service
@@ -59,7 +59,7 @@ deploy-service: deploy-libs-service deploy-cfg
 
 
 .PHONY : deploy-backend
-deploy-backend: deploy-libs deploy-libs-backend
+deploy-backend: deploy-libs-backend
 
 
 ##########################################
