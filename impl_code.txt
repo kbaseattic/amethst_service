@@ -28,7 +28,3 @@ $self->{'instance'} = new AMETHSTAWE(@args);
 #BEGIN delete_job
 	$results = $self->{'instance'}->delete_job($job_id);
 #END delete_job
-
-#BEGIN version
-	$version = $AMETHSTAWE::VERSION;
-#END
