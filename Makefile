@@ -127,6 +127,7 @@ test-client:
 	if [ $$? -ne 0 ]; then \
 		exit 1; \
 	fi \
+	@echo test-client successful
 
 .PHONY : test-service
 test-service:
@@ -134,6 +135,7 @@ test-service:
 	if [ $$? -ne 0 ]; then \
 		exit 1; \
 	fi \
+	@echo test-service successful
 
 .PHONY : test-backend
 test-backend:	
@@ -141,7 +143,7 @@ test-backend:
 	if [ $$? -ne 0 ]; then \
 		exit 1; \
 	fi \
-
+	@echo test-backend successful
 
 ##########################################
 
