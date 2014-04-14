@@ -27,7 +27,7 @@ use AWE::TaskOutput;
 1;
 
 
-our $VERSION = '1.00';
+our $VERSION = '1.0.0';
 
 # new AMETHSTAWE('shocktoken' => <token>)
 sub new {
