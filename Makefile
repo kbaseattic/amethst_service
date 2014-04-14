@@ -137,7 +137,10 @@ test-service:
 
 .PHONY : test-backend
 test-backend:	
-
+	$(KB_RUNTIME)/bin/perl test/backend-test.pl ; \
+	if [ $$? -ne 0 ]; then \
+		exit 1; \
+	fi \
 
 
 ##########################################

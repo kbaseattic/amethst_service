@@ -45,7 +45,7 @@ unless (-e $amethst_pl) {
 
 system($amethst_pl." -h") == 0 or die "$amethst_pl returned with error";
 
-
+return 0;
 
 
 
