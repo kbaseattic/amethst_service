@@ -126,7 +126,7 @@ test-client:
 	mg-amethst -h; \
 	if [ $$? -ne 0 ]; then \
 		exit 1; \
-	fi \
+	fi
 	@echo test-client successful
 
 .PHONY : test-service
@@ -134,7 +134,7 @@ test-service:
 	$(KB_RUNTIME)/bin/perl test/service-test.pl ; \
 	if [ $$? -ne 0 ]; then \
 		exit 1; \
-	fi \
+	fi
 	@echo test-service successful
 
 .PHONY : test-backend
@@ -142,7 +142,7 @@ test-backend:
 	$(KB_RUNTIME)/bin/perl test/backend-test.pl ; \
 	if [ $$? -ne 0 ]; then \
 		exit 1; \
-	fi \
+	fi
 	@echo test-backend successful
 
 ##########################################
