@@ -123,7 +123,7 @@ test: test-client test-service test-backend
 
 .PHONY : test-client
 test-client:
-	$(DEPLOY_RUNTIME)/runtime/bin/mg-amethst -h; \
+	$(TOP_DIR)/runtime/bin/mg-amethst -h; \
 	if [ $$? -ne 0 ]; then \
 		exit 1; \
 	fi \
