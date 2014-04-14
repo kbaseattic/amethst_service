@@ -185,7 +185,7 @@ if ((defined $h->{'command_file'}) || (defined $h->{'zip_prefix'}) ) {
 	} else {
 		print "no shocktoken\n";
 	}
-	my $amethst_obj = new Bio::KBase::AmethstService::Client('shocktoken' => $shocktoken);
+	my $amethst_obj = new Bio::KBase::AmethstService::Client(undef, 'shocktoken' => $shocktoken);
 	
 	
 	
