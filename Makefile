@@ -130,8 +130,10 @@ test-client:
 
 .PHONY : test-service
 test-service:
-
-
+	$(KB_RUNTIME)/bin/perl test/service-test.pl ; \
+	if [ $$? -ne 0 ]; then \
+		exit 1; \
+	fi \
 
 .PHONY : test-backend
 test-backend:	
