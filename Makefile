@@ -24,7 +24,7 @@ WRAP_PERL_SCRIPT = bash $(TOOLS_DIR)/$(WRAP_PERL_TOOL).sh
 SRC_PERL = $(wildcard plbin/*.pl)
 
 
-
+# this is default target:
 .PHONY : compile
 compile: initialize
 
@@ -35,31 +35,17 @@ deploy: deploy-all
 .PHONY : deploy-all
 deploy-all: deploy-client deploy-service
 
+
+##########################################
+# main targets
+
 .PHONY : deploy-client
-deploy-client: deploy-libs deploy-libs2 deploy-scripts
+deploy-client: deploy-libs deploy-libs-client deploy-scripts
 
-.PHONY : deploy-libs2
-deploy-libs2: build-libs
-	rsync --exclude '*.bak*' -arv MG-RAST-Tools/tools/lib/. $(TARGET)/lib/.
-
-
-DEPRECATEDdeploy-scripts: initialize
-	export KB_TOP=$(TARGET); \
-	export KB_RUNTIME=$(DEPLOY_RUNTIME); \
-	export KB_PERL_PATH=$(TARGET)/lib bash ; \
-	for src in $(SRC_PERL) ; do \
-		basefile=`basename $$src`; \
-		base=`basename $$src .pl`; \
-		echo install $$src $$base ; \
-		mkdir -p $(TARGET)/plbin/ ; \
-		cp $$src $(TARGET)/plbin/ ; \
-		$(WRAP_PERL_SCRIPT) "$(TARGET)/plbin/$$basefile" $(TARGET)/bin/$$base ; \
-	done
-	cp -r AMETHST $(TARGET)/services/$(SERVICE_DIR)/
 
 
 .PHONY : deploy-service
-deploy-service: deploy-cfg
+deploy-service: deploy-libs-service deploy-cfg
 	mkdir -p $(TARGET)/services/$(SERVICE_DIR)
 	$(TPAGE) $(TPAGE_ARGS) service/start_service.tt > $(TARGET)/services/$(SERVICE_DIR)/start_service
 	chmod +x $(TARGET)/services/$(SERVICE_DIR)/start_service
@@ -71,18 +57,49 @@ deploy-service: deploy-cfg
 	cp -r AMETHST $(TARGET)/services/$(SERVICE_DIR)/
 	echo "done executing deploy-service target"
 
+
+.PHONY : deploy-backend
+deploy-backend: deploy-libs deploy-libs-backend
+
+
+##########################################
+
 .PHONY : initialize
 initialize:
 	git submodule init
 	git submodule update
 	git submodule foreach git pull origin master
 
-deploy-upstart: deploy-service
-	-cp service/$(SERVICE_NAME).conf /etc/init/
-	echo "done executing deploy-upstart target"
 
-.PHONY : build-libs
-build-libs:
+##########################################
+# deploy-libs targets
+
+.PHONY : deploy-libs-service
+deploy-libs-service: build-libs-service deploy-mylibs
+	
+
+.PHONY : deploy-libs-client
+deploy-libs-client: deploy-mylibs
+
+
+.PHONY : deploy-libs-backend
+deploy-libs-backend: deploy-mylibs	
+
+.PHONY : deploy-mylibs
+deploy-mylibs: 
+	rsync --exclude '*.bak*' -arv MG-RAST-Tools/tools/lib/. $(TARGET)/lib/.
+
+
+#deploy-upstart: deploy-service
+#	-cp service/$(SERVICE_NAME).conf /etc/init/
+#	echo "done executing deploy-upstart target"
+
+
+##########################################
+# build-libs targets
+
+.PHONY : build-libs-service
+build-libs-service:
 	mkdir -p lib/Bio/KBase/AmethstService/
 	cp impl_code.txt lib/Bio/KBase/AmethstService/AmethstServiceImpl.pm
 	compile_typespec \
