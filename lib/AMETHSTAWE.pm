@@ -26,6 +26,9 @@ use AWE::TaskOutput;
 
 1;
 
+
+our $VERSION = '1.00';
+
 # new AMETHSTAWE('shocktoken' => <token>)
 sub new {
     my ($class, %h) = @_;
