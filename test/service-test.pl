@@ -3,12 +3,12 @@
 use strict;
 use warnings;
 
-use Bio::KBase::AmethstService::AmethstServiceImpl;
+use Bio::KBase::AmethstService::Client;
 
 
 
 
-my $amethst_obj = new Bio::KBase::AmethstService::AmethstServiceImpl('shocktoken' => 'fake');
+my $amethst_obj = new Bio::KBase::AmethstService::Client('shocktoken' => 'fake');
 
 
 my $amethst_service_version = $amethst_obj->version();
