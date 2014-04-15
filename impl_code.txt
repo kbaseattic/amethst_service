@@ -7,9 +7,11 @@ use Data::Dumper;
 #END_HEADER
 
 #BEGIN_CONSTRUCTOR
+print STDERR "ERROR HERE\n";
+
 my $ctx = $Bio::KBase::AmethstService::Service::CallContext;
 print STDERR "ERROR:" . Dumper ($ctx);
-$self->{'instance'} = new AMETHSTAWE(@args, "shocktoken" => $ctx->token );
+$self->{'instance'} = new AMETHSTAWE(@args, "shocktoken" => "x" );
 #END_CONSTRUCTOR
 
 
