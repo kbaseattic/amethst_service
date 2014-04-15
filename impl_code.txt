@@ -7,15 +7,12 @@ use Data::Dumper;
 #END_HEADER
 
 #BEGIN_CONSTRUCTOR
-print STDERR "ERROR HERE\n";
-
-my $ctx = $Bio::KBase::AmethstService::Service::CallContext;
-print STDERR "ERROR:" . Dumper ($ctx);
-$self->{'instance'} = new AMETHSTAWE(@args, "shocktoken" => "x" );
+	$self->{'instance'} = new AMETHSTAWE(@args);
 #END_CONSTRUCTOR
 
 
 #BEGIN amethst
+	print STDERR "ERROR:" . Dumper ($ctx);
 	$job_id = $self->{'instance'}->amethst(\$commands_list, $file2shock);
 #END amethst
 
