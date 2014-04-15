@@ -51,7 +51,6 @@ sub new {
     
 	$self->readConfig();
 	
-	$self->shockurl || die "error(new): shockurl not defined";
 	
 	return $self;
 }
@@ -70,7 +69,12 @@ sub clientgroup {
     return $self->{'clientgroup'};
 }
 sub shocktoken {
-    my ($self) = @_;
+    my ($self, $value) = @_;
+	
+	if (defined $value) {
+		$self->{'shocktoken'} = $value;
+	}
+	
     return $self->{'shocktoken'};
 }
 

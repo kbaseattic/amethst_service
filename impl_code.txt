@@ -13,20 +13,24 @@ use Data::Dumper;
 
 #BEGIN amethst
 	print STDERR "ERROR:" . Dumper ($ctx);
+	$self->{'instance'}->shocktoken($ctx->{'token'});
 	$job_id = $self->{'instance'}->amethst(\$commands_list, $file2shock);
 #END amethst
 
 
 #BEGIN status
+	$self->{'instance'}->shocktoken($ctx->{'token'});
 	$status = $self->{'instance'}->status($job_id);
 #END status
 
 
 #BEGIN results
+	$self->{'instance'}->shocktoken($ctx->{'token'});
 	$return = $self->{'instance'}->results($job_id);
 #END results
 
 
 #BEGIN delete_job
+	$self->{'instance'}->shocktoken($ctx->{'token'});
 	$results = $self->{'instance'}->delete_job($job_id);
 #END delete_job
