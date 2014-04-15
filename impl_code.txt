@@ -6,7 +6,8 @@ use AMETHSTAWE;
 #END_HEADER
 
 #BEGIN_CONSTRUCTOR
-$self->{'instance'} = new AMETHSTAWE(@args);
+my $ctx = $Bio::KBase::AmethstService::Service::CallContext;
+$self->{'instance'} = new AMETHSTAWE(@args, "shocktoken" => $ctx->token );
 #END_CONSTRUCTOR
 
 
