@@ -3,10 +3,12 @@
 
 #BEGIN_HEADER
 use AMETHSTAWE;
+use Data::Dumper;
 #END_HEADER
 
 #BEGIN_CONSTRUCTOR
 my $ctx = $Bio::KBase::AmethstService::Service::CallContext;
+print Dumper($ctx);
 $self->{'instance'} = new AMETHSTAWE(@args, "shocktoken" => $ctx->token );
 #END_CONSTRUCTOR
 
