@@ -310,8 +310,8 @@ sub create_and_submit_workflow {
 
 	# upload splitted command files
 	
-	print STDERR "self->shockurl: $self->shockurl\n";
-	print STDERR "self->shocktoken: $self->shocktoken\n";
+	print STDERR "self->shockurl: ".$self->shockurl."\n";
+	print STDERR "self->shocktoken: ".$self->shocktoken."\n";
 	
 	$workflow->shock_upload($self->shockurl, $self->shocktoken);
 	
