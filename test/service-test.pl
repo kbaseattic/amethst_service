@@ -8,7 +8,7 @@ use Bio::KBase::AmethstService::Client;
 
 
 
-my $amethst_obj = new Bio::KBase::AmethstService::Client(undef, 'shocktoken' => 'fake');
+my $amethst_obj = new Bio::KBase::AmethstService::Client();
 
 
 my $amethst_service_version = $amethst_obj->version();
