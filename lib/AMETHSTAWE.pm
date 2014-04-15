@@ -309,6 +309,10 @@ sub create_and_submit_workflow {
 	print "AWE job without input:\n".$json->pretty->encode( $workflow->getHash() )."\n";
 
 	# upload splitted command files
+	
+	print STDERR "self->shockurl: $self->shockurl\n";
+	print STDERR "self->shocktoken: $self->shocktoken\n";
+	
 	$workflow->shock_upload($self->shockurl, $self->shocktoken);
 	
 	print "AWE job with input:\n".$json->pretty->encode( $workflow->getHash() )."\n";
