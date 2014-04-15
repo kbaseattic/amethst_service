@@ -226,7 +226,7 @@ sub create_and_submit_workflow {
 		die;
 	}
 
-	$awe->checkClientGroup($self->clientgroup)==0 || die;
+	$awe->checkClientGroup($self->clientgroup)==0 || die "no clients in clientgroup found, ".$self->clientgroup;
 
 
 	
