@@ -7,7 +7,7 @@ include $(TOP_DIR)/tools/Makefile.common
 
 SERVICE_SPEC = amethst.spec      
 SERVICE_NAME = AmethstService
-SERVICE_PORT = 7109
+SERVICE_PORT = 7118
 SERVICE_DIR  = amethst_service
 
 ifeq ($(SELF_URL),)
