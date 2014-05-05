@@ -262,7 +262,7 @@ sub create_and_submit_workflow {
 		#create and add a new task
 		my $newtask = $workflow->addTask(new AWE::Task());
 		
-		$newtask->command('mg-amethst -f @'.$input_filename.' -z '.$analysis_filename);
+		$newtask->command('AMETHST.pl -f @'.$input_filename.' -z '.$analysis_filename);
 		
 		
 		
@@ -290,7 +290,7 @@ sub create_and_submit_workflow {
 		$output_zip = 'AMETHST_Summary.tar.gz';
 	}
 	
-	$newtask->command('mg-amethst --summary --output_zip='.$output_zip);
+	$newtask->command('compile_p-values-summary_files.pl --output_zip='.$output_zip);
 	$newtask->addInput(@summary_inputs); # these input nodes connect this task with the previous tasks
 	
 	# define output nodes for last task
