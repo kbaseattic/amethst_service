@@ -58,8 +58,8 @@ deploy-service: deploy-libs deploy-libs-service deploy-cfg
 	echo "done executing deploy-service target"
 
 
-.PHONY : deploy-backend
-deploy-backend: deploy-libs-backend
+#.PHONY : deploy-backend
+#deploy-backend: deploy-libs-backend
 
 
 ##########################################
@@ -82,8 +82,8 @@ deploy-libs-service: build-libs-service deploy-mylibs
 deploy-libs-client: deploy-mylibs
 
 
-.PHONY : deploy-libs-backend
-deploy-libs-backend: deploy-mylibs	
+#.PHONY : deploy-libs-backend
+#deploy-libs-backend: deploy-mylibs	
 
 .PHONY : deploy-mylibs
 deploy-mylibs: 
@@ -118,7 +118,7 @@ build-libs-service:
 
 
 .PHONY : test
-test: test-client test-service test-backend
+test: test-client test-service
 
 
 .PHONY : test-client
@@ -137,13 +137,13 @@ test-service:
 	fi
 	@echo test-service successful
 
-.PHONY : test-backend
-test-backend:	
-	$(KB_RUNTIME)/bin/perl test/backend-test.pl ; \
-	if [ $$? -ne 0 ]; then \
-		exit 1; \
-	fi
-	@echo test-backend successful
+#.PHONY : test-backend
+#test-backend:	
+#	$(KB_RUNTIME)/bin/perl test/backend-test.pl ; \
+#	if [ $$? -ne 0 ]; then \
+#		exit 1; \
+#	fi
+#	@echo test-backend successful
 
 ##########################################
 
