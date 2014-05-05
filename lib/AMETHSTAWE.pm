@@ -289,8 +289,8 @@ sub create_and_submit_workflow {
 	unless (defined $output_zip) {
 		$output_zip = 'AMETHST_Summary.tar.gz';
 	}
-	
-	$newtask->command('compile_p-values-summary_files.pl --output_zip='.$output_zip);
+	#old:'compile_p-values-summary_files.pl --output_zip='.$output_zip
+	$newtask->command('AMETHST.pl -c --summary_name='.$output_zip);
 	$newtask->addInput(@summary_inputs); # these input nodes connect this task with the previous tasks
 	
 	# define output nodes for last task
