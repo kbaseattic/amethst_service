@@ -262,7 +262,7 @@ sub create_and_submit_workflow {
 		#create and add a new task
 		my $newtask = $workflow->addTask(new AWE::Task());
 		
-		$newtask->command('AMETHST.pl -f @'.$input_filename.' -z '.$analysis_filename);
+		$newtask->command('AMETHST.pl -f @'.$input_filename.' -z --all_name '.$analysis_filename);
 		
 		
 		
