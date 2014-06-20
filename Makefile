@@ -33,7 +33,7 @@ compile: initialize
 deploy: deploy-all
 
 .PHONY : deploy-all
-deploy-all: deploy-client deploy-service
+deploy-all: deploy-client
 
 
 ##########################################
@@ -118,7 +118,7 @@ build-libs-service:
 
 
 .PHONY : test
-test: test-client test-service
+test: test-client
 
 
 .PHONY : test-client
