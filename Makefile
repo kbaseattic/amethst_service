@@ -33,7 +33,7 @@ compile: initialize
 deploy: deploy-all
 
 .PHONY : deploy-all
-deploy-all: deploy-client
+deploy-all: deploy-client deploy-service
 
 
 ##########################################
