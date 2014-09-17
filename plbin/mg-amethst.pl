@@ -335,7 +335,7 @@ if ((defined $h->{'command_file'}) || (defined $h->{'zip_prefix'}) ) {
 		my $file = $results->{$node};
 		
 		print "downloading \"$file\" ...\n";
-		$shock->download_to_path2($node, './'.$file);
+		$shock->download_to_path($node, './'.$file);
 		
 	}
 	print "all files downloaded\n";
