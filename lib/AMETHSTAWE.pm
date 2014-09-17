@@ -225,7 +225,7 @@ sub create_and_submit_workflow {
 	############################################
 	# connect to AWE server and check the clients
 
-	my $awe = new AWE::Client($self->aweserverurl, $self->shocktoken);
+	my $awe = new AWE::Client($self->aweserverurl, $self->shocktoken, $self->shocktoken, 1); # second token is for AWE
 	unless (defined $awe) {
 		die;
 	}
