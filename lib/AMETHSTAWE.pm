@@ -29,6 +29,10 @@ use AWE::TaskOutput;
 
 our $VERSION = '1.0.0';
 
+
+my $debug = 1; # mainly used for AWE::Client.pm
+
+
 # new AMETHSTAWE('shocktoken' => <token>)
 sub new {
     my ($class, %h) = @_;
@@ -225,12 +229,12 @@ sub create_and_submit_workflow {
 	############################################
 	# connect to AWE server and check the clients
 
-	my $awe = new AWE::Client($self->aweserverurl, $self->shocktoken, $self->shocktoken, 1); # second token is for AWE
+	my $awe = new AWE::Client($self->aweserverurl, $self->shocktoken, $self->shocktoken, $debug); # second token is for AWE
 	unless (defined $awe) {
 		die;
 	}
 
-	#$awe->checkClientGroup($self->clientgroup)==0 || die "no clients in clientgroup found, ".$self->clientgroup." (AWE server: ".$self->aweserverurl.")";
+	$awe->checkClientGroup($self->clientgroup)==0 || die "no clients in clientgroup found, ".$self->clientgroup." (AWE server: ".$self->aweserverurl.")";
 
 
 	
@@ -343,7 +347,7 @@ sub create_and_submit_workflow {
 sub status {
 	my ($self, $job_id) = @_;
 	
-	my $awe = new AWE::Client($self->aweserverurl, $self->shocktoken);
+	my $awe = new AWE::Client($self->aweserverurl, $self->shocktoken, $self->shocktoken, $debug);
 	unless (defined $awe) {
 		die;
 	}
@@ -358,7 +362,7 @@ sub status {
 sub results {
 	my ($self, $job_id) = @_;
 	
-	my $awe = new AWE::Client($self->aweserverurl, $self->shocktoken);
+	my $awe = new AWE::Client($self->aweserverurl, $self->shocktoken, $self->shocktoken, $debug);
 	unless (defined $awe) {
 		die;
 	}
@@ -402,7 +406,7 @@ sub results {
 sub delete_job {
 	my ($self, $job_id) = @_;
 	
-	my $awe = new AWE::Client($self->aweserverurl, $self->shocktoken);
+	my $awe = new AWE::Client($self->aweserverurl, $self->shocktoken, $self->shocktoken, $debug);
 	unless (defined $awe) {
 		die;
 	}
