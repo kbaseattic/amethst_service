@@ -323,6 +323,10 @@ sub create_and_submit_workflow {
 	print "submit job to AWE server...\n";
 	my $submission_result = $awe->submit_job('json_data' => $json->encode($workflow->getHash()));
 
+	unless (-e $submission_result->{'data'}) {
+		print STDERR Dumper($submission_result);
+	}
+	
 	my $job_id = $submission_result->{'data'}->{'id'} || die "no job_id found";
 
 
