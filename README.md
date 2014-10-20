@@ -41,3 +41,22 @@ Script should be executed with envrionment variables that include KB_AUTH_TOKEN 
 
 
 
+Instructions to install amethst client script independently
+===========================================================
+
+USAGEPOD
+--------
+wget https://raw.githubusercontent.com/wgerlach/USAGEPOD/master/lib/USAGEPOD.pm
+
+SHOCK
+-----
+mkdir SHOCK
+cd SHOCK
+wget https://raw.githubusercontent.com/MG-RAST/Shock/master/libs/SHOCK/Client.pm
+cd ..
+
+amethst client script
+---------------------
+wget https://raw.githubusercontent.com/kbase/amethst_service/master/plbin/mg-amethst.pl
+chmod +x mg-amethst.pl
+
