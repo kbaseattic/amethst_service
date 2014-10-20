@@ -7,7 +7,7 @@ AMETHST, or Analysis METHod Selection Tool, is an automated pipeline that makes 
 
 
 Deployment in KBase
-===================
+-------------------
 
 configure deploy.cfg
 
@@ -32,7 +32,7 @@ one of
 
 
 Creating a backend compute VM
-=============================
+-----------------------------
 Script location (the script is located in the AMETHST repository linked to this amethst_service repository):
 \AMETHST\installation\Install_AMETHST_compute_node.havannah.sh
 
@@ -42,21 +42,21 @@ Script should be executed with envrionment variables that include KB_AUTH_TOKEN 
 
 
 Instructions to install amethst client script independently
-===========================================================
+-----------------------------------------------------------
 
-USAGEPOD
---------
-> wget https://raw.githubusercontent.com/wgerlach/USAGEPOD/master/lib/USAGEPOD.pm
+USAGEPOD library
 
-SHOCK
------
-> mkdir SHOCK
-> cd SHOCK
-> wget https://raw.githubusercontent.com/MG-RAST/Shock/master/libs/SHOCK/Client.pm
-> cd ..
+> wget https://raw.githubusercontent.com/wgerlach/USAGEPOD/master/lib/USAGEPOD.pm<br>
+
+SHOCK client library
+
+> mkdir SHOCK<br>
+> cd SHOCK<br>
+> wget https://raw.githubusercontent.com/MG-RAST/Shock/master/libs/SHOCK/Client.pm<br>
+> cd ..<br>
 
 amethst client script
----------------------
-> wget https://raw.githubusercontent.com/kbase/amethst_service/master/plbin/mg-amethst.pl
-> chmod +x mg-amethst.pl
+
+> wget https://raw.githubusercontent.com/kbase/amethst_service/master/plbin/mg-amethst.pl<br>
+> chmod +x mg-amethst.pl<br>
 
