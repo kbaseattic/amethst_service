@@ -41,7 +41,7 @@ Creating a backend compute VM
 -----------------------------
 Script location (the script is located in the AMETHST repository linked to this amethst_service repository):
 ```bash
-\AMETHST\installation\Install_AMETHST_compute_node.havannah.sh
+AMETHST/installation/Install_AMETHST_compute_node.havannah.sh
 ```
 
 Script should be executed with envrionment variables that include KB_AUTH_TOKEN and AWE_CLIENT_GROUP_TOKEN:
