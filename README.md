@@ -12,33 +12,42 @@ Deployment in KBase
 configure deploy.cfg
 
 
-
-> make<br>
+```bash
+make
+```
 
 one of:
-> make deploy-client<br>
-> make deploy-service<br>
-> make deploy-backend<br>
-> make deploy-all<br>
+```bash
+make deploy-client
+make deploy-service
+make deploy-backend
+make deploy-all
+```
 
 then
-> source /kb/deployment/user-env.sh<br>
+```bash
+source /kb/deployment/user-env.sh
+```
 
 one of
-> make test-client<br>
-> make test-service<br>
-> make test-backend<br>
-> make test<br>
-
+```bash
+make test-client
+make test-service
+make test-backend
+make test
+```
 
 Creating a backend compute VM
 -----------------------------
 Script location (the script is located in the AMETHST repository linked to this amethst_service repository):
+```bash
 \AMETHST\installation\Install_AMETHST_compute_node.havannah.sh
+```
 
 Script should be executed with envrionment variables that include KB_AUTH_TOKEN and AWE_CLIENT_GROUP_TOKEN:
-> sudo -E Install_AMETHST_compute_node.havannah.sh
-
+```bash
+sudo -E Install_AMETHST_compute_node.havannah.sh
+```
 
 
 Instructions to install amethst client script independently
@@ -46,17 +55,31 @@ Instructions to install amethst client script independently
 
 USAGEPOD library
 
-> wget https://raw.githubusercontent.com/wgerlach/USAGEPOD/master/lib/USAGEPOD.pm<br>
+```bash
+wget https://raw.githubusercontent.com/wgerlach/USAGEPOD/master/lib/USAGEPOD.pm
+```
 
 SHOCK client library
 
-> mkdir SHOCK<br>
-> cd SHOCK<br>
-> wget https://raw.githubusercontent.com/MG-RAST/Shock/master/libs/SHOCK/Client.pm<br>
-> cd ..<br>
+```bash
+mkdir SHOCK
+cd SHOCK
+wget https://raw.githubusercontent.com/MG-RAST/Shock/master/libs/SHOCK/Client.pm
+cd ..
+```
 
 amethst client script
 
-> wget https://raw.githubusercontent.com/kbase/amethst_service/master/plbin/mg-amethst.pl<br>
-> chmod +x mg-amethst.pl<br>
+```bash
+wget https://raw.githubusercontent.com/kbase/amethst_service/master/plbin/mg-amethst.pl
+chmod +x mg-amethst.pl
+```
 
+configuration to use KBase amethst service
+
+```bash
+export SHOCK_SERVER_URL=
+export KB_AUTH_TOKEN=<your kbase token>
+```
+
+The token can also be passed with --token=<token> to mg-amethst.pl
