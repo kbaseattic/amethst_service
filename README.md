@@ -30,7 +30,7 @@ source /kb/deployment/user-env.sh
 ```
 
 one of
-```bash
+```shell
 make test-client
 make test-service
 make test-backend
