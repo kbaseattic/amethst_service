@@ -1,5 +1,5 @@
 
-FROM kbase/deplbase:latest
+FROM kbase/depl:latest
 
 ADD . /kb/dev_container/modules/amethst_service
 
