@@ -88,7 +88,7 @@ deploy-libs-client: deploy-mylibs
 .PHONY : deploy-mylibs
 deploy-mylibs: 
 	rsync --exclude '*.bak*' -arv MG-RAST-Tools/tools/lib/. $(TARGET)/lib/.
-
+	rsync --exclude '*.bak*' -arv lib/. $(TARGET)/lib/.
 
 #deploy-upstart: deploy-service
 #	-cp service/$(SERVICE_NAME).conf /etc/init/
